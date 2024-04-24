@@ -1,4 +1,5 @@
 import 'package:crypto_wallet/app/data/models/api_response.dart';
+import 'package:crypto_wallet/app/logic/assets_controller.dart';
 import 'package:crypto_wallet/core/services/http_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:get/get.dart';
 class AddAssetDialogController extends GetxController {
   RxBool loading = false.obs;
   RxString selectedAssets = ''.obs;
+  RxDouble assetValue = 0.0.obs;
 
   RxList<String> assets = <String>[].obs;
 
@@ -68,21 +70,63 @@ class AddAssetDialog extends StatelessWidget {
         ),
       );
     } else {
-      return Column(
-        children: [
-          DropdownButton(
-            value: controller.selectedAssets.value,
-            items: controller.assets
-                .map(
-                  (asset) => DropdownMenuItem(
-                    value: asset,
-                    child: Text(asset),
-                  ),
-                )
-                .toList(),
-            onChanged: (value) {},
-          ),
-        ],
+      return Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 25.0,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            DropdownButton(
+              value: controller.selectedAssets.value,
+              items: controller.assets
+                  .map(
+                    (asset) => DropdownMenuItem(
+                      value: asset,
+                      child: Text(asset),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                if (value != null) {
+                  controller.selectedAssets.value = value;
+                }
+              },
+            ),
+            TextField(
+              onChanged: (value) {
+                controller.assetValue.value = double.parse(
+                  value,
+                );
+              },
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+            ),
+            MaterialButton(
+              onPressed: () {
+                AssetsController assetsController = Get.find();
+                assetsController.addTrackedAsset(
+                  controller.selectedAssets.value,
+                  controller.assetValue.value,
+                );
+                Get.back(
+                  closeOverlays: true,
+                );
+              },
+              color: Theme.of(context).colorScheme.primary,
+              child: const Text(
+                'Add Asset',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            )
+          ],
+        ),
       );
     }
   }
