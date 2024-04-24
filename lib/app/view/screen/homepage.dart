@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class Homepage extends StatelessWidget {
-  AssetsController assetsController = Get.find();
+  final AssetsController assetsController = Get.find();
 
   Homepage({super.key});
 
