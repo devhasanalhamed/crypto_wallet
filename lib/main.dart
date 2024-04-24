@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   await registerServices();
+  await registerControllers();
   runApp(const MyApp());
 }
 
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.quicksandTextTheme(),
       ),
       routes: {
-        '/home': (context) => const Homepage(),
+        '/home': (context) => Homepage(),
       },
       initialRoute: '/home',
     );
