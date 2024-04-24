@@ -1,17 +1,19 @@
+import 'package:crypto_wallet/app/data/models/api_response.dart';
 import 'package:crypto_wallet/core/services/http_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AddAssetDialogController extends GetxController {
   RxBool loading = false.obs;
+  RxString selectedAssets = ''.obs;
+
+  RxList<String> assets = <String>[].obs;
 
   @override
   void onInit() {
     _getAssets();
     super.onInit();
   }
-
-  
 
   Future<void> _getAssets() async {
     loading.value = true;
@@ -20,8 +22,13 @@ class AddAssetDialogController extends GetxController {
     var responseData = await httpService.get(
       'currencies',
     );
+    CurrenciesListAPIResponse currenciesListAPIResponse =
+        CurrenciesListAPIResponse.fromJson(responseData);
+    currenciesListAPIResponse.data?.forEach((coin) {
+      assets.add(coin.name!);
+    });
+    selectedAssets.value = assets.first;
     loading.value = false;
-    print(responseData);
   }
 }
 
@@ -44,14 +51,14 @@ class AddAssetDialog extends StatelessWidget {
               borderRadius: BorderRadius.circular(15.0),
               color: Colors.white,
             ),
-            child: _buildUI(),
+            child: _buildUI(context),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildUI() {
+  Widget _buildUI(BuildContext context) {
     if (controller.loading.isTrue) {
       return const Center(
         child: SizedBox(
@@ -61,8 +68,21 @@ class AddAssetDialog extends StatelessWidget {
         ),
       );
     } else {
-      return const Column(
-        children: [],
+      return Column(
+        children: [
+          DropdownButton(
+            value: controller.selectedAssets.value,
+            items: controller.assets
+                .map(
+                  (asset) => DropdownMenuItem(
+                    value: asset,
+                    child: Text(asset),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) {},
+          ),
+        ],
       );
     }
   }
