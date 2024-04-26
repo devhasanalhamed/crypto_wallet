@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:crypto_wallet/app/data/models/tracked_asset.dart';
 import 'package:crypto_wallet/app/logic/assets_controller.dart';
 import 'package:crypto_wallet/app/view/screen/details_screen.dart';
@@ -23,7 +24,7 @@ class Homepage extends StatelessWidget {
   PreferredSizeWidget _appBar(BuildContext context) {
     return AppBar(
       title: const CircleAvatar(
-        foregroundImage: NetworkImage(
+        foregroundImage: CachedNetworkImageProvider(
           'https://i.pravatar.cc/150?img=3',
         ),
       ),
